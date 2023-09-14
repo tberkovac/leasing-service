@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cv-deployment
+  labels:
+    app: cv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cv
+  template:
+    metadata:
+      labels:
+        app: cv
+    spec:
+      containers:
+      - name: cv-svc
+        image: ghcr.io/tberkovac/cv-svc-ghcr:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "0.5"
+        ports:
+        - containerPort: 4040
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+
+---
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: cv-service
+spec:
+  selector:
+    app: cv
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4040
