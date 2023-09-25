@@ -15,10 +15,11 @@ USER appuser
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG configuration=Release
 WORKDIR /src
-COPY ["leasing-service.csproj", "leasing-service/"]
-RUN dotnet restore "leasing-service/leasing-service.csproj"
+COPY ["API/leasing-service.csproj", "leasing-service/API/"]
+RUN dotnet restore "leasing-service/API/leasing-service.csproj"
 WORKDIR "/src/leasing-service"
 COPY . .
+WORKDIR "/src/leasing-service/API"
 RUN dotnet build "leasing-service.csproj" -c $configuration -o /app/build
 
 FROM build AS publish
